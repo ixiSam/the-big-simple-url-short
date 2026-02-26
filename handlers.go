@@ -41,10 +41,14 @@ func (us *URLShortener) HandleShorten(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	originalURL := r.FormValue("url")
+	originalURL := r.PostFormValue("url")
 	if originalURL == "" {
 		http.Error(w, "URL parameter is missing", http.StatusBadRequest)
 		return
+	}
+
+	if !strings.HasPrefix(originalURL, "http://") && !strings.HasPrefix(originalURL, "https://") {
+		originalURL = "https://" + originalURL
 	}
 
 	shortKey := generateShortKey()
